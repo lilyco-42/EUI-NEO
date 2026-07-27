@@ -1,5 +1,5 @@
 cmake_minimum_required(VERSION 3.14)
-project(EUI-NEO VERSION 0.5.2)
+project(EUI-NEO VERSION 0.5.3)
 
 include(GNUInstallDirs)
 include(CMakePackageConfigHelpers)
@@ -146,6 +146,7 @@ find_package(Python3 COMPONENTS Interpreter QUIET)
 
 set(CORE_SOURCES
     core/platform/async.cpp
+    core/platform/json.cpp
     core/platform/network.cpp
     core/platform/native_bridge.c
     core/platform/performance_stats.cpp
@@ -194,9 +195,27 @@ target_include_directories(eui_neo
         $<INSTALL_INTERFACE:${CMAKE_INSTALL_INCLUDEDIR}>
         $<INSTALL_INTERFACE:${CMAKE_INSTALL_INCLUDEDIR}/eui-neo>
 )
+target_include_directories(eui_neo PRIVATE "${CMAKE_CURRENT_SOURCE_DIR}/3rd/yyjson-0.12.0/src")
 target_link_libraries(eui_neo PUBLIC Threads::Threads)
 target_compile_features(eui_neo PUBLIC cxx_std_17)
+target_compile_definitions(eui_neo PRIVATE YYJSON_DISABLE_WRITER=1)
 eui_apply_compile_options(eui_neo)
+
+set(EUI_YYJSON_SOURCE "${CMAKE_CURRENT_SOURCE_DIR}/3rd/yyjson-0.12.0/src/yyjson.c")
+if(EUI_BUILD_SHARED)
+    add_library(eui_yyjson STATIC "${EUI_YYJSON_SOURCE}")
+    target_include_directories(eui_yyjson PRIVATE "${CMAKE_CURRENT_SOURCE_DIR}/3rd/yyjson-0.12.0/src")
+    target_compile_definitions(eui_yyjson PRIVATE YYJSON_DISABLE_WRITER=1)
+    set_target_properties(eui_yyjson PROPERTIES
+        POSITION_INDEPENDENT_CODE ON
+        C_VISIBILITY_PRESET hidden
+        VISIBILITY_INLINES_HIDDEN ON
+    )
+    eui_silence_third_party_warnings(eui_yyjson)
+    target_link_libraries(eui_neo PRIVATE eui_yyjson)
+else()
+    target_sources(eui_neo PRIVATE "${EUI_YYJSON_SOURCE}")
+endif()
 
 if(EUI_RESOLVED_RENDER_BACKEND STREQUAL "opengl")
     target_compile_definitions(eui_neo PUBLIC EUI_RENDER_BACKEND_OPENGL=1)

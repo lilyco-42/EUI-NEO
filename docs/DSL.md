@@ -474,6 +474,47 @@ Frame 动画需要显式 `.animate(eui::AnimProperty::Frame)`。窗口大小变�
 
 容器 `Row` / `Column` / `Stack` / `Flow` 也支持 `opacity` 和 transform。Runtime 会把容器的 `translate`、`scale`、`rotate`、`rotateX`、`rotateY`、`translateZ`、`perspective`、`transformOrigin` 组合成投影矩阵并继承到子树，因此弹窗、下拉、菜单、卡片翻转和透视动画会作用到内部 Rect / Polygon / Text / Image / Svg。布局占位仍由未 transform 的逻辑 frame 决定。
 
+### 布局 Frame 动画限制
+
+`Frame` 动画只作用于可见叶子节点：`Rect`、`Text`、`Image`、`Svg` 和 `Polygon`。`Row`、`Column`、`Stack`、`Flow` 是布局容器，它们的逻辑 frame 改变会立即重新测量子树，不会自身执行长宽插值。
+
+当任意祖先容器的目标 frame 改变时，Runtime 会让该子树的叶子 frame 同步到新的布局结果，避免插值期间出现错误的流式排版、命中区域、裁剪或滚动范围。因此，下面的写法不会得到预期的平滑展开：
+
+```cpp
+ui.stack("card")
+    .size(width, expanded ? 238.0f : 148.0f)
+    .content([&] {
+        ui.rect("card.background")
+            .fill()
+            .transition(0.3f)
+            .animate(eui::AnimProperty::Frame)
+            .build();
+    })
+    .build();
+```
+
+需要平滑展开的面板、卡片或折叠内容，应保持外层布局容器的逻辑尺寸稳定，让可见叶子节点在其中独立插值：
+
+```cpp
+constexpr float maxHeight = 238.0f;
+const float height = expanded ? maxHeight : 148.0f;
+const float top = (maxHeight - height) * 0.5f;
+
+ui.stack("card")
+    .size(width, maxHeight) // 不随状态变化，避免祖先布局 snap
+    .content([&] {
+        ui.rect("card.background")
+            .position(0.0f, top)
+            .size(width, height)
+            .transition(0.3f, eui::Ease::OutCubic)
+            .animate(eui::AnimProperty::Frame)
+            .build();
+    })
+    .build();
+```
+
+完整、可运行的参考实现见 `examples/animated_card.cpp`。它同时展示了 frame、transform、颜色、圆角、边框、阴影和透明度动画。
+
 当前可动画属性：
 
 - Rect：frame、color、opacity、radius、border、shadow、blur、transform。
