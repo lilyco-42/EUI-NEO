@@ -1,28 +1,5 @@
-# Quick Start: Create an EUI-NEO Project
-
-## 1. Create project directory
-
-```sh
-mkdir my-eui-app && cd my-eui-app
-```
-
-## 2. Create `xmake.lua`
-
-```lua
-set_languages("cxx17")
-add_requires("eui-neo")
-
-target("myapp")
-    set_kind("binary")
-    add_files("app.cpp")
-    add_rules("eui.app")
-    add_includedirs(".")
-```
-
-## 3. Create `app.cpp`
-
-```cpp
 #include "eui_neo.h"
+#include <cstdio>
 #include <string>
 
 static std::string g_name;
@@ -74,35 +51,3 @@ void compose(eui::Ui& ui, const eui::Screen& screen) {
 }
 
 } // namespace app
-```
-
-## 4. Build and run
-
-```sh
-xmake f -m release -y
-xmake
-xmake run myapp
-```
-
-## Options
-
-```sh
-# SDL2 backend
-xmake f --window_backend=sdl2
-
-# Vulkan renderer
-xmake f --render_backend=vulkan
-
-# Shared library
-xmake f --shared=y
-```
-
-## Included demo
-
-Run the included `hello_demo` example:
-
-```sh
-xmake run hello_demo
-```
-
-Type a name, click "Say Hello", and see the greeting appear.
