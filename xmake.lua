@@ -288,15 +288,15 @@ target("eui_neo")
 
     -- Install rules (for `xmake install` and xrepo packaging)
     add_installfiles("include/(**)", {prefixdir = "include"})
-    add_installfiles("components/(**.h)", {prefixdir = "include/eui-neo"})
-    add_installfiles("core/(**.h)", {prefixdir = "include/eui-neo"})
-    add_installfiles("3rd/stb_image.h", "3rd/nanosvg.h", "3rd/nanosvgrast.h", {prefixdir = "include/eui-neo/3rd"})
-    add_installfiles("3rd/tray/tray.h", {prefixdir = "include/eui-neo/3rd/tray"})
+    add_installfiles("components/(**.h)", {prefixdir = "include"})
+    add_installfiles("core/(**.h)", {prefixdir = "include"})
+    add_installfiles("3rd/stb_image.h", "3rd/nanosvg.h", "3rd/nanosvgrast.h", {prefixdir = "include"})
+    add_installfiles("3rd/tray/tray.h", {prefixdir = "include"})
     if render_backend == "opengl" then
         add_installfiles("3rd/glad/include/(**.h)", {prefixdir = "include"})
     end
     if enable_markdown then
-        add_installfiles("3rd/md4c/src/md4c.h", {prefixdir = "include/eui-neo/3rd/md4c/src"})
+        add_installfiles("3rd/md4c/src/md4c.h", {prefixdir = "include"})
     end
 
     if is_plat("windows") then
