@@ -290,8 +290,8 @@ target("eui_neo")
     add_installfiles("include/(**)", {prefixdir = "include"})
     add_installfiles("components/(**.h)", {prefixdir = "include/components"})
     add_installfiles("core/(**.h)", {prefixdir = "include/core"})
-    add_installfiles("3rd/stb_image.h", "3rd/nanosvg.h", "3rd/nanosvgrast.h", {prefixdir = "include"})
-    add_installfiles("3rd/tray/tray.h", {prefixdir = "include"})
+    add_installfiles("3rd/stb_image.h", "3rd/nanosvg.h", "3rd/nanosvgrast.h", {prefixdir = "include/3rd"})
+    add_installfiles("3rd/tray/tray.h", {prefixdir = "include/3rd/tray"})
     if render_backend == "opengl" then
         add_installfiles("3rd/glad/include/(**.h)", {prefixdir = "include"})
     end
