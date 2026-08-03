@@ -287,7 +287,7 @@ target("eui_neo")
     end
 
     -- Install rules (for `xmake install` and xrepo packaging)
-    add_installfiles("include/(*)", {prefixdir = "include"})
+    add_installfiles("include/(**)", {prefixdir = "include"})
     add_installfiles("components/(**.h)", {prefixdir = "include/eui-neo"})
     add_installfiles("core/(**.h)", {prefixdir = "include/eui-neo"})
     add_installfiles("3rd/stb_image.h", "3rd/nanosvg.h", "3rd/nanosvgrast.h", {prefixdir = "include/eui-neo/3rd"})
