@@ -15,8 +15,7 @@ add_requires("eui-neo")
 target("myapp")
     set_kind("binary")
     add_files("app.cpp")
-    add_rules("eui.app")
-    add_includedirs(".")
+    add_packages("eui-neo")
 ```
 
 ## 3. Create `app.cpp`
@@ -40,23 +39,29 @@ const DslAppConfig& dslAppConfig() {
 void compose(eui::Ui& ui, const eui::Screen& screen) {
     ui.column("root")
         .size(screen.width, screen.height)
-        .padding(40.0f)
-        .gap(16.0f)
         .content([&] {
             ui.text("title")
+                .x(40.0f)
+                .y(32.0f)
                 .text("EUI-NEO Demo")
                 .fontSize(24.0f)
                 .build();
 
-            ui.text_input("name_input")
+            components::input(ui, "name_input")
+                .x(40.0f)
+                .y(88.0f)
+                .size(400.0f, 40.0f)
                 .placeholder("Enter your name...")
-                .text(g_name)
+                .value(g_name)
                 .onChange([](const std::string& value) {
                     g_name = value;
                 })
                 .build();
 
-            ui.button("say_hello")
+            components::button(ui, "say_hello")
+                .x(40.0f)
+                .y(148.0f)
+                .size(160.0f, 44.0f)
                 .text("Say Hello")
                 .onClick([]() {
                     g_greeting = "Hello, " + g_name + "!";
@@ -65,6 +70,8 @@ void compose(eui::Ui& ui, const eui::Screen& screen) {
 
             if (!g_greeting.empty()) {
                 ui.text("greeting")
+                    .x(40.0f)
+                    .y(216.0f)
                     .text(g_greeting)
                     .fontSize(20.0f)
                     .build();

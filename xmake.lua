@@ -192,7 +192,8 @@ target("eui_neo")
         "core/render/shadertoy_primitive.cpp",
         "core/render/stb_image_impl.cpp",
         "core/render/text.cpp",
-        "core/window/window_backend.cpp"
+        "core/window/window_backend.cpp",
+        "core/window/window_input_backend.cpp"
     )
 
     -- C files: force /TC on MSVC so they compile as C, not C++
